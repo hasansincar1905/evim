@@ -28,8 +28,8 @@ export default function RootLayout({ children }) {
 
       <body>
         {/* Google Adsence */}
-        {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxxxxxx"
-          crossorigin="anonymous"></script> */}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2864672373009685"
+          crossorigin="anonymous"></script>
         <Providers >
           <Toaster position="top-center" reverseOrder={false} />
           <>
