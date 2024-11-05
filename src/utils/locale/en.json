@@ -261,6 +261,7 @@
   "signInWithEmail": "Sign in with Email",
   "paymentWith": "Payment with",
   "stripe": "Stripe",
+  "paytr": "PayTR",
   "razorPay": "Razor pay",
   "payStack": "Pay Stack",
   "dropFiles": "Drop the files here...",

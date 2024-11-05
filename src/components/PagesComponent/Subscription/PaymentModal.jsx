@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FaAngleRight } from 'react-icons/fa6';
 import { MdClose } from 'react-icons/md';
 import stripe from '../../../../public/assets/ic_stripe.png';
+import paytr from '../../../../public/assets/ic_paytr.png';
 import razorpay from '../../../../public/assets/ic_razorpay.png';
 import paystack from '../../../../public/assets/ic_paystack.png';
 import useRazorpay from 'react-razorpay';
@@ -24,6 +25,9 @@ const PaymentModal = ({ isPaymentModal, OnHide, packageSettings, priceData, sett
     const PayStackActive = packageSettings?.Paystack;
     const RazorPayActive = packageSettings?.Razorpay;
     const StripeActive = packageSettings?.Stripe;
+    const PayTRActive = packageSettings?.PayTR;
+
+    console.log('packageSettings ==>', packageSettings)
 
     const [showStripeForm, setShowStripeForm] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
@@ -183,6 +187,37 @@ const PaymentModal = ({ isPaymentModal, OnHide, packageSettings, priceData, sett
         }
     }, [StripeActive, priceData, showStripeForm]);
 
+    const handlePayTRPayment = useCallback(async () => {
+        try {
+            const res = await createPaymentIntentApi.createIntent({ package_id: priceData.id, payment_method: PayTRActive.payment_method });
+            if (res.data.error) {
+                throw new Error(res.data.message);
+            }
+
+            console.log('res==>', res)
+
+            // Extract the payment intent details
+            const paymentIntent = res.data.data.payment_intent;
+            // const clientSecret = paymentIntent.client_secret;
+            // setClientSecret(clientSecret)
+            // Check if paymentIntent exists and contains the token
+            if (paymentIntent) {
+                const token = paymentIntent.token; // Your token from the API response
+                const paymentUrl = `https://www.paytr.com/odeme/guvenli/${token}`;
+
+                // Redirect to PayTR payment page
+                window.location.href = paymentUrl;
+                // window.open(paymentUrl, '_blank');
+            } else {
+                throw new Error("Payment intent not found.");
+            }
+
+        } catch (error) {
+            console.error("Error during PayTR payment", error);
+            toast.error(t("errorOccurred"));
+        }
+    }, [PayTRActive, priceData, showStripeForm]);
+
     // Define PaymentForm component to handle Stripe payment
     const PaymentForm = ({ elements }) => {
         const handleSubmit = async (event) => {
@@ -285,9 +320,24 @@ const PaymentModal = ({ isPaymentModal, OnHide, packageSettings, priceData, sett
                                         <div className="col-12">
                                             <button onClick={handleStripePayment}>
                                                 <div className="payment_details">
-                                                    <Image loading='lazy' src={stripe} onEmptiedCapture={placeholderImage} />
+                                                    <Image loading='lazy' src={stripe} onEmptiedCapture={placeholderImage} alt='Stripe' />
                                                     <span>
                                                         {t('stripe')}
+                                                    </span>
+                                                </div>
+                                                <div className="payment_icon">
+                                                    <FaAngleRight size={18} />
+                                                </div>
+                                            </button>
+                                        </div>
+                                    }
+                                    {PayTRActive?.status === 1 &&
+                                        <div className="col-12">
+                                            <button onClick={handlePayTRPayment}>
+                                                <div className="payment_details">
+                                                    <Image loading='lazy' src={paytr} width={30} onEmptiedCapture={placeholderImage} alt='payTR' />
+                                                    <span>
+                                                        {t('paytr')}
                                                     </span>
                                                 </div>
                                                 <div className="payment_icon">
