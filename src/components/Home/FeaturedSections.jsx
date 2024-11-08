@@ -8,8 +8,6 @@ import { useSelector } from "react-redux";
 const FeaturedSections = ({ featuredData, setFeaturedData, allEmpty }) => {
   const userData = useSelector(userSignUpData);
 
-  console.log("FeaturedSections", featuredData);
-
   const handleLike = (id) => {
     const updatedData = featuredData.map((section) => {
       const updatedSectionData = section.section_data.map((item) => {
